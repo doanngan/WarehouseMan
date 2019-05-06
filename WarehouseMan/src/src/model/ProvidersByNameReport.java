@@ -28,7 +28,7 @@ package src.model;
 
 	/**
 	 * @overview 
-	 * 	Represent the reports about Provider by name.
+	 * 	Represent the reports about provider by name.
 	 *
 	 */
 	@DClass(schema="WarehouseMan",serialisable=false)
