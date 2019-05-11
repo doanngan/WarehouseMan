@@ -23,48 +23,48 @@ package src.model;
 	import domainapp.basics.model.query.Query;
 	import domainapp.basics.model.query.QueryToolKit;
 	import domainapp.basics.modules.report.model.meta.Output;
-	import src.model.Provider;
-	import src.model.ProvidersByNameReport;
+	import src.model.TypeOfProduct;
+	import src.model.ProductsByTypeReport;
 
 	/**
 	 * @overview 
-	 * 	Represent the reports about provider by name.
+	 * 	Represent the reports about product by type.
 	 *
 	 */
 	@DClass(schema="WarehouseMan",serialisable=false) //true
-	public class ProvidersByNameReport {
+	public class ProductsByTypeReport {
 	  @DAttr(name = "id", id = true, auto = true, type = Type.Integer, length = 5, optional = false, mutable = false)
 	  private int id;
 	  private static int idCounter = 0;
 
-	  /**input: provider name */
-	  @DAttr(name = "name", type = Type.String, length = 30, optional = false)
-	  private String name;
+	  /**input: TypeofProduct name */
+	  @DAttr(name = "typeOfProduct", type = Type.String, length = 30, optional = false)
+	  private String typeOfProduct;
 	  
-	  /**output: providers whose names match {@link #name} */
-	  @DAttr(name="providers",type=Type.Collection,optional=false, mutable=false,
-	      serialisable=false,filter=@Select(clazz=Provider.class, 
-	      attributes={Provider.A_id, Provider.A_name, Provider.A_phone, Provider.A_email, 
-	          Provider.A_address, Provider.A_rptProviderByName})
-	      ,derivedFrom={"name"}
+	  /**output: TypeOfProducts whose names match {@link #typeOfProduct} */
+	  @DAttr(name="TypeOfProducts",type=Type.Collection,optional=false, mutable=false,
+	      serialisable=false,filter=@Select(clazz=TypeOfProduct.class, 
+	      attributes={TypeOfProduct.B_id, TypeOfProduct.B_name, TypeOfProduct.B_rptProductByType})
+	      ,derivedFrom={"typeOfProduct"}
 	      )
-	  @DAssoc(ascName="Providers-by-name-report-has-Providers",role="report",
+	  @DAssoc(ascName="Products-by-type-report-has-TypeOfProducts",role="report",
 	      ascType=AssocType.One2Many,endType=AssocEndType.One,
-	    associate=@Associate(type=Provider.class,cardMin=0,cardMax=MetaConstants.CARD_MORE
+	    associate=@Associate(type=TypeOfProduct.class,cardMin=0,cardMax=MetaConstants.CARD_MORE
 	    ))
 	  @Output
-	  private Collection<Provider> Providers;
+	  private Collection<TypeOfProduct> TypeOfProducts;
 
-	  /**output: number of Providers found (if any), derived from {@link #Providers} */
-	  @DAttr(name = "numProviders", type = Type.Integer, length = 20, auto=true, mutable=false)
+	  /**output: number of Products found (if any), derived from {@link #TypeOfProducts} */
+	  @DAttr(name = "numProducts", type = Type.Integer, length = 20, auto=true, mutable=false)
 	  @Output
-	  private int numProviders;
+	  private int numProducts;
 	  
 	  /**
-	   * @effects 
+	   * @param typeOfProduct 
+	 * @effects 
 	   *  initialise this with <tt>name</tt> and use {@link QRM} to retrieve from data source 
-	   *  all {@link Provider} whose names match <tt>name</tt>.
-	   *  initialise {@link #Providers} with the result if any.
+	   *  all {@link TypeOfProduct} whose names match <tt>name</tt>.
+	   *  initialise {@link #TypeOfProducts} with the result if any.
 	   *  
 	   *  <p>throws NotPossibleException if failed to generate data source query; 
 	   *  DataSourceException if fails to read from the data source
@@ -72,34 +72,32 @@ package src.model;
 	   */
 	  @DOpt(type=DOpt.Type.ObjectFormConstructor)
 	  @DOpt(type=DOpt.Type.RequiredConstructor)
-	  public ProvidersByNameReport(@AttrRef("name") String name) throws NotPossibleException, DataSourceException {
+	  public ProductsByTypeReport(@AttrRef("typeOfProduct") String name, String typeOfProduct) throws NotPossibleException, DataSourceException {
 	    this.id=++idCounter;
-	    
-	    this.name = name;
+	    this.typeOfProduct = typeOfProduct;
 	    
 	    doReportQuery();
 	  }
 	  
 	  /**
-	   * @effects return name
+	   * @effects return typeOfProduct
 	   */
-	  public String getName() {
-	    return name;
+	  public String getTypeOfProduct() {
+	    return typeOfProduct;
 	  }
 
 	  /**
 	   * @effects <pre>
-	   *  set this.name = name
-	   *  if name is changed
+	   *  set this.typeOfProduct = typeOfProduct
+	   *  if typeOfProduct is changed
 	   *    invoke {@link #doReportQuery()} to update the output attribute value
 	   *    throws NotPossibleException if failed to generate data source query; 
 	   *    DataSourceException if fails to read from the data source.
 	   *  </pre>
 	   */
-	  public void setName(String name) throws NotPossibleException, DataSourceException {
-//	    boolean doReportQuery = (name != null && !name.equals(this.name));
-	    
-	    this.name = name;
+	  public void setTypeOfProduct(String typeOfProduct) throws NotPossibleException, DataSourceException {
+    
+	    this.typeOfProduct = typeOfProduct;
 	    
 	    // DONOT invoke this here if there are > 1 input attributes!
 	    doReportQuery();
@@ -117,30 +115,30 @@ package src.model;
 	   *  DataSourceException if fails to read from the data source. </pre>
 	   */
 	  @DOpt(type=DOpt.Type.DerivedAttributeUpdater) //
-	  @AttrRef(value="Providers")
+	  @AttrRef(value="TypeOfProducts")
 	  public void doReportQuery() throws NotPossibleException, DataSourceException {
 	    // the query manager instance
 	    
 	    QRM qrm = QRM.getInstance();
 	    
-	    // create a query to look up Provider from the data source
-	    // and then populate the output attribute (Providers) with the result
+	    // create a query to look up TypeOfProduct from the data source
+	    // and then populate the output attribute (TypeOfProducts) with the result
 	    DSMBasic dsm = qrm.getDsm();
 	    
 	    //TODO: to conserve memory cache the query and only change the query parameter value(s)
-	    Query q = QueryToolKit.createSearchQuery(dsm, Provider.class, 
-	        new String[] {Provider.A_name}, 
+	    Query q = QueryToolKit.createSearchQuery(dsm, TypeOfProduct.class, 
+	        new String[] {TypeOfProduct.B_name}, 
 	        new Op[] {Op.MATCH}, 
-	        new Object[] {"%"+name+"%"});
+	        new Object[] {"%"+typeOfProduct+"%"});
 	    
-	    Map<Oid, Provider> result = qrm.getDom().retrieveObjects(Provider.class, q);
+	    Map<Oid, TypeOfProduct> result = qrm.getDom().retrieveObjects(TypeOfProduct.class, q);
 	    
 	    if (result != null) {
 	      // update the main output data 
-	      Providers = result.values();
+	      TypeOfProducts = result.values();
 	      
 	      // update other output (if any)
-	      numProviders = Providers.size();
+	      numProducts = TypeOfProducts.size();
 	    } else {
 	      // no data found: reset output
 	      resetOutput();
@@ -152,32 +150,32 @@ package src.model;
 	   *  reset all output attributes to their initial values
 	   */
 	  private void resetOutput() {
-	    Providers = null;
-	    numProviders = 0;
+	    TypeOfProducts = null;
+	    numProducts = 0;
 	  }
 
 	  /**
-	   * A link-adder method for {@link #Providers}, required for the object form to function.
-	   * However, this method is empty because Providers have already be recorded in the attribute {@link #Providers}.
+	   * A link-adder method for {@link #TypeOfProducts}, required for the object form to function.
+	   * However, this method is empty because TypeOfProducts have already be recorded in the attribute {@link #TypeOfProducts}.
 	   */
 	  @DOpt(type=DOpt.Type.LinkAdder)
-	  public boolean addProvider(Collection<Provider> Providers) {
+	  public boolean addTypeOfProduct(Collection<TypeOfProduct> TypeOfProducts) {
 	    // do nothing
 	    return false;
 	  }
 	  
 	  /**
-	   * @effects return Providers
+	   * @effects return TypeOfProducts
 	   */
-	  public Collection<Provider> getProviders() {
-	    return Providers;
+	  public Collection<Product> getProducts() {
+	    return Products;
 	  }
 	  
 	  /**
-	   * @effects return numProviders
+	   * @effects return numTypeOfProducts
 	   */
-	  public int getNumProviders() {
-	    return numProviders;
+	  public int getNumProducts() {
+	    return numProducts;
 	  }
 
 	  /**
@@ -219,7 +217,7 @@ package src.model;
 	      return false;
 	    if (getClass() != obj.getClass())
 	      return false;
-	    ProvidersByNameReport other = (ProvidersByNameReport) obj;
+	    ProductsByTypeReport other = (ProductsByTypeReport) obj;
 	    if (id != other.id)
 	      return false;
 	    return true;
@@ -235,6 +233,6 @@ package src.model;
 	   */
 	  @Override
 	  public String toString() {
-	    return "ProvidersByNameReport (" + id + ", " + name + ")";
+	    return "ProductsByTypeReport (" + id + ", " + typeOfProduct + ")";
 	  }
 }
