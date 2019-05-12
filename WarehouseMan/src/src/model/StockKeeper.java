@@ -1,4 +1,4 @@
-package model;
+package src.model;
 
 import domainapp.basics.exceptions.ConstraintViolationException;
 import domainapp.basics.model.meta.AttrRef;

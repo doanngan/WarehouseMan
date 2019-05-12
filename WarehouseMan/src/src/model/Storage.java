@@ -1,5 +1,9 @@
 package src.model;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+
 import domainapp.basics.exceptions.ConstraintViolationException;
 import domainapp.basics.model.meta.AttrRef;
 import domainapp.basics.model.meta.DAssoc;
@@ -8,15 +12,26 @@ import domainapp.basics.model.meta.DAssoc.AssocType;
 import domainapp.basics.model.meta.DAssoc.Associate;
 import domainapp.basics.model.meta.DAttr;
 import domainapp.basics.model.meta.DAttr.Type;
-import domainapp.basics.util.Tuple;
+import domainapp.basics.model.meta.DClass;
 import domainapp.basics.model.meta.DOpt;
+import domainapp.basics.model.meta.Select;
+import domainapp.basics.util.Tuple;
+import src.model.StoragesByDateReport;
 
+@DClass(schema="WarehouseMan")
 public class Storage {
-	@DAttr(name = "id", id = true, auto = true, type = DAttr.Type.Integer, mutable = false, optional = false, length = 6)
-	private Integer id;
-	private static int idCounter;
+	  public static final String S_date = "date";
+	  public static final String S_id = "id";
+	  public static final String S_rptStorageByDate = "rptStorageByDate";
+	
+	  // attributes of Storage
+	  @DAttr(name = S_id, id = true, type = Type.String, auto = true, length = 6, 
+	      mutable = false, optional = false)
+	  private String id;
+	  //static variable to keep track of storage  id
+	  private static int idCounter = 0;
 
-	@DAttr(name = "date", type = Type.String, length = 30, optional = false)
+	@DAttr(name = S_date, type = Type.String, length = 30, optional = false)
 	private String date;
 
 	@DAttr(name = "product", type = Type.Domain, length = 5, optional = false)
@@ -28,41 +43,36 @@ public class Storage {
 	private Preservation preservation;
 
 	@DAttr(name = "stockKeeper", type = Type.Domain, length = 20, optional = true)
-	private String StockKeeper;
-	
 	@DAssoc(ascName = "stockKeeper-storage", role = "stockKeeper", ascType = AssocType.One2Many, endType = AssocEndType.Many, associate = @Associate(type = StockKeeper.class, cardMin = 1, cardMax = 10))
-	private stockKeeper stockKeeper;
+	private StockKeeper stockKeeper;
+	
+	@DAttr(name=S_rptStorageByDate,type=Type.Domain, serialisable=false, 
+		      virtual=true)
+		  private StoragesByDateReport rptStorageByDate;
 
 
-	@DOpt(type = DOpt.Type.ObjectFormConstructor)
-	public Storage(@AttrRef("date") String date, @AttrRef("product") Product product, @AttrRef("preservation") Preservation preservation,
-			@AttrRef("stockKeeper") StockKeeper stockKeeper) {
-		this(null,date, product, preservation, stockKeeper);
-		
-	}
+	@DOpt(type=DOpt.Type.ObjectFormConstructor)
+	  @DOpt(type=DOpt.Type.RequiredConstructor)
+	  public Storage(@AttrRef("date") String date) {
+	    this(null, date);
+	  }
 
-	@DOpt(type = DOpt.Type.DataSourceConstructor)
-	public Storage(Integer id, String date, Product product, Preservation preservation,
-			StockKeeper stockKeeper) {
-		this.id = nextID(id);
-		this.date=date;
-		this.product=product;
-		this.stockKeeper=stockKeeper;
-		
+	@DOpt(type=DOpt.Type.DataSourceConstructor)
+	  public Storage(@AttrRef("id") String id, 
+	      @AttrRef("date") String date) 
+	  throws ConstraintViolationException {
+	    // generate an id
+	    this.id = nextID(id);
+
+	    // assign other values
+	    this.date = date;
 	}
 	
-	public Integer getId() {
-		return id;
-	}
-
-	public String getDate() {
-		return date;
-	}
-
-	public void setDate(String date) {
-		this.date = date;
-	}
-
+	// setter methods
+	  public void setDate(String date) {
+	    this.date = date;
+	  }
+	
 	public Product getProduct() {
 		return product;
 	}
@@ -87,29 +97,82 @@ public class Storage {
 		this.stockKeeper = stockKeeper;
 	}
 
-	private static int nextID(Integer currID) {
-		if (currID == null) {
-			idCounter++;
-			return idCounter;
-		} else {
-			int num = currID.intValue();
-			if (num > idCounter)
-				idCounter = num;
+	public StoragesByDateReport getRptStorageByDate() {
+	    return rptStorageByDate;
+	  } 
+	
+	@Override
+	  public int hashCode() {
+	    final int prime = 31;
+	    int result = 1;
+	    result = prime * result + ((id == null) ? 0 : id.hashCode());
+	    return result;
+	  }
 
-			return currID;
-		}
+	  @Override
+	  public boolean equals(Object obj) {
+	    if (this == obj)
+	      return true;
+	    if (obj == null)
+	      return false;
+	    if (getClass() != obj.getClass())
+	      return false;
+	    Storage other = (Storage) obj;
+	    if (id == null) {
+	      if (other.id != null)
+	        return false;
+	    } else if (!id.equals(other.id))
+	      return false;
+	    return true;
+	  }
+	  
+	  private String nextID(String id) throws ConstraintViolationException {
+		    if (id == null) { // generate a new id
+		      if (idCounter == 0) {
+		        idCounter = Calendar.getInstance().get(Calendar.YEAR);
+		      } else {
+		        idCounter++;
+		      }
+		      return "S" + idCounter;
+		    } else {
+		      // update id
+		      int num;
+		      try {
+		        num = Integer.parseInt(id.substring(1));
+		      } catch (RuntimeException e) {
+		        throw new ConstraintViolationException(
+		            ConstraintViolationException.Code.INVALID_VALUE, e, new Object[] { id });
+		      }
+		      
+		      if (num > idCounter) {
+		        idCounter = num;
+		      }
+		      
+		      return id;
+		    }
+		  }
+	  @DOpt(type=DOpt.Type.AutoAttributeValueSynchroniser)
+	  public static void updateAutoGeneratedValue(
+	      DAttr attrib,
+	      Tuple derivingValue, 
+	      Object minVal, 
+	      Object maxVal) throws ConstraintViolationException {
+	    
+	    if (minVal != null && maxVal != null) {
+	      //TODO: update this for the correct attribute if there are more than one auto attributes of this class 
+
+	      String maxId = (String) maxVal;
+	      
+	      try {
+	        int maxIdNum = Integer.parseInt(maxId.substring(1));
+	        
+	        if (maxIdNum > idCounter) // extra check
+	          idCounter = maxIdNum;
+	        
+	      } catch (RuntimeException e) {
+	        throw new ConstraintViolationException(
+	            ConstraintViolationException.Code.INVALID_VALUE, e, new Object[] {maxId});
+	      }
+	    }
+	  }
 	}
-
-	@DOpt(type = DOpt.Type.AutoAttributeValueSynchroniser)
-	public static void updateAutoGeneratedValue(DAttr attrib, Tuple derivingValue, Object minVal, Object maxVal)
-			throws ConstraintViolationException {
-
-		if (minVal != null && maxVal != null) {
-
-			int maxIdVal = (Integer) maxVal;
-			if (maxIdVal > idCounter) {
-				idCounter = maxIdVal;
-			}
-		}
-	}
-}

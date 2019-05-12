@@ -28,8 +28,7 @@ public class TypeOfProduct {
 	@DAttr(name = B_name, type = Type.String, length = 30, optional = false)
 	private String typeOfProduct;
 	
-	@DAttr(name=B_rptProductByType,type=DAttr.Type.Domain, serialisable=false,
-			   virtual=true)
+	@DAttr(name=B_rptProductByType,type=DAttr.Type.Domain, serialisable=false, virtual=true)
 		private ProductsByTypeReport rptProductByType;
 	
 	@DOpt(type=DOpt.Type.ObjectFormConstructor)

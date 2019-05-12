@@ -103,8 +103,7 @@ public class Product {
       }
 
       public Double getIprice() {
-        return iprice;
-        
+        return iprice; 
       }
 
       public TypeOfProduct getType() {

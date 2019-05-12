@@ -158,7 +158,7 @@ public class Provider {
 	      } else {
 	        idCounter++;
 	      }
-	      return "S" + idCounter;
+	      return "P" + idCounter;
 	    } else {
 	      // update id
 	      int num;

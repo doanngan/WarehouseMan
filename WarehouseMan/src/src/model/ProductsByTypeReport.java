@@ -168,7 +168,7 @@ package src.model;
 	   * @effects return TypeOfProducts
 	   */
 	  public Collection<Product> getProducts() {
-	    return Products;
+	    return Product;
 	  }
 	  
 	  /**
