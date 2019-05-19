@@ -31,7 +31,7 @@ package src.model;
 	 * 	Represent the reports about provider by name.
 	 *
 	 */
-	@DClass(schema="WarehouseMan",serialisable=false) //true
+	@DClass(schema="Warehouseman",serialisable=false) //true
 	public class ProvidersByNameReport {
 	  @DAttr(name = "id", id = true, auto = true, type = Type.Integer, length = 5, optional = false, mutable = false)
 	  private int id;
@@ -42,11 +42,11 @@ package src.model;
 	  private String name;
 	  
 	  /**output: providers whose names match {@link #name} */
-	  @DAttr(name="providers",type=Type.Collection,optional=false, mutable=false,
+	  @DAttr(name="Providers",type=Type.Collection,optional=false, mutable=false,
 	      serialisable=false,filter=@Select(clazz=Provider.class, 
-	      attributes={Provider.A_id, Provider.A_name, Provider.A_phone, Provider.A_email, 
-	          Provider.A_address, Provider.A_rptProviderByName})
-	      ,derivedFrom={"name"}
+	      attributes={Provider.P_id, Provider.P_name, Provider.P_phone, Provider.P_email, 
+	          Provider.P_address, Provider.P_rptProviderByName})
+	      ,derivedFrom={"provider"}
 	      )
 	  @DAssoc(ascName="Providers-by-name-report-has-Providers",role="report",
 	      ascType=AssocType.One2Many,endType=AssocEndType.One,
@@ -74,7 +74,6 @@ package src.model;
 	  @DOpt(type=DOpt.Type.RequiredConstructor)
 	  public ProvidersByNameReport(@AttrRef("name") String name) throws NotPossibleException, DataSourceException {
 	    this.id=++idCounter;
-	    
 	    this.name = name;
 	    
 	    doReportQuery();
@@ -129,7 +128,7 @@ package src.model;
 	    
 	    //TODO: to conserve memory cache the query and only change the query parameter value(s)
 	    Query q = QueryToolKit.createSearchQuery(dsm, Provider.class, 
-	        new String[] {Provider.A_name}, 
+	        new String[] {Provider.P_name}, 
 	        new Op[] {Op.MATCH}, 
 	        new Object[] {"%"+name+"%"});
 	    

@@ -39,8 +39,8 @@ public class TypeOfProduct {
 	
 	@DOpt(type=DOpt.Type.DataSourceConstructor)
 	  public TypeOfProduct(@AttrRef("id") String id, 
-	      @AttrRef("typeOfProduct") String typeOfProduct) 
-	  throws ConstraintViolationException {
+		      @AttrRef("typeOfProduct") String typeOfProduct) 
+		    		  throws ConstraintViolationException {
 	    // generate an id
 	    this.id = nextID(id);
 

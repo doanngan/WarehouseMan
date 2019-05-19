@@ -11,10 +11,14 @@ import src.model.ImportBill;
 import src.model.ImportBillPerItem;
 import src.model.ImportChecker;
 import src.model.ImportStaff;
+import src.model.Preservation;
 import src.model.Product;
 import src.model.ProductsByTypeReport;
 import src.model.Provider;
 import src.model.ProvidersByNameReport;
+import src.model.StockKeeper;
+import src.model.Storage;
+import src.model.StoragesByDateReport;
 import src.model.TypeOfProduct;
 
 
@@ -26,6 +30,7 @@ public class WarehouseMan extends DomainAppToolSoftware {
       Address.class,
 	  Product.class,
 	  Provider.class,
+	  Preservation.class,
       TypeOfProduct.class,
       ImportChecker.class,
       ExportChecker.class,
@@ -36,7 +41,10 @@ public class WarehouseMan extends DomainAppToolSoftware {
       ImportBillPerItem.class,
       ImportBill.class,
       ProvidersByNameReport.class,
-      ProductsByTypeReport.class
+      ProductsByTypeReport.class,
+      StockKeeper.class,
+      Storage.class,
+      StoragesByDateReport.class
       };
       
   @Override

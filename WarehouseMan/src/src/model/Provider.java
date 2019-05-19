@@ -1,6 +1,7 @@
 package src.model;
 
 import java.util.Calendar;
+
 import domainapp.basics.exceptions.ConstraintViolationException;
 import domainapp.basics.model.meta.AttrRef;
 import domainapp.basics.model.meta.DAssoc;
@@ -11,37 +12,42 @@ import domainapp.basics.model.meta.DAttr;
 import domainapp.basics.model.meta.DAttr.Type;
 import domainapp.basics.model.meta.DClass;
 import domainapp.basics.model.meta.DOpt;
-import domainapp.basics.model.meta.Select;
 import domainapp.basics.util.Tuple;
-import src.model.ProvidersByNameReport;
 
-@DClass(schema="WarehouseMan")
+@DClass(schema="Warehouseman")
 public class Provider {
-	  public static final String A_name = "name";
-	  public static final String A_id = "id";
-	  public static final String A_phone = "phone";
-	  public static final String A_address = "address";
-	  public static final String A_email = "email";
-	  public static final String A_rptProviderByName = "rptProviderByName";
+	  public static final String P_id = "id";
+	  public static final String P_name = "name";
+	  public static final String P_phone = "phone";
+	  public static final String P_email = "email";
+	  public static final String P_rptProviderByName = "rptProviderByName";
 
-	@DAttr(name = A_id, id = true, auto = true, type = Type.String, mutable = false, optional = false, length = 6)
+	@DAttr(name = P_id, id = true, auto = true, type = Type.String, mutable = false, optional = false, length = 6)
 	private String id;
 	private static int idCounter = 0;
 
-	@DAttr(name = A_name, type = Type.String, optional = false, length = 20)
+	@DAttr(name = P_name, type = Type.String, optional = false, length = 20)
+	@DAssoc(ascName = "Providers-by-name-report-has-Provider", role = "provider",
+	ascType = AssocType.One2Many, endType = AssocEndType.Many, associate = @Associate(type = Provider.class, cardMin = 1, cardMax = 1), dependsOn = true)
 	private String name;
-	@DAttr(name = A_phone, type = Type.String, optional = false, length = 15)
+	
+	@DAttr(name = P_phone, type = Type.String, optional = false, length = 15)
 	private String phone;
-	@DAttr(name = A_email, type = Type.String, optional = false, length = 20)
+	
+	@DAttr(name = P_email, type = Type.String, optional = false, length = 20)
 	private String email;
-	@DAttr(name = A_address, type = Type.Domain, length = 20, optional = true)
+	
+	@DAttr(name = "address", type = Type.Domain, length = 20, optional = true)
 	@DAssoc(ascName = "provider-has-address", role = "provider", ascType = AssocType.One2Many, 
 	        endType = AssocEndType.Many, associate = @Associate(type = Address.class, cardMin = 1, cardMax = 10))
 	private Address address;
 	
-	@DAttr(name=A_rptProviderByName,type=DAttr.Type.Domain, serialisable=false,
+	@DAttr(name=P_rptProviderByName,type=DAttr.Type.Domain, serialisable=false,
 		   virtual=true)
 	private ProvidersByNameReport rptProviderByName;
+	
+//	private Collection<ProvidersByNameReport> ProvidersByNameReport;
+//	private int count;
 	
 	@DOpt(type=DOpt.Type.ObjectFormConstructor)
 	@DOpt(type=DOpt.Type.RequiredConstructor)
@@ -52,28 +58,21 @@ public class Provider {
 	    this(null, name, phone, address, email);
 	  }
 	
-//	@DOpt(type=DOpt.Type.ObjectFormConstructor)
-//	  public Provider(@AttrRef("name") String name, 
-//	      @AttrRef("phone") String phone, 
-//	      @AttrRef("address") Address address, 
-//	      @AttrRef("email") String email) {
-//	    this(null, name, dob, address, email, sclass);
-//	  }
-
-	@DOpt(type=DOpt.Type.DataSourceConstructor)
-	  public Provider(@AttrRef("id") String id, 
-	      @AttrRef("name") String name, @AttrRef("phone") String phone, @AttrRef("address") Address address, 
-	      @AttrRef("email") String email) 
-	  throws ConstraintViolationException {
-	    // generate an id
-	    this.id = nextID(id);
-
-	    // assign other values
-	    this.name = name;
+	@DOpt(type = DOpt.Type.DataSourceConstructor)
+	public Provider(@AttrRef("id") String id, @AttrRef("name") String name, 
+		      @AttrRef("phone") String phone, @AttrRef("address") Address address, 
+		      @AttrRef("email") String email)
+		    		  throws ConstraintViolationException {
+		this.id = nextID(id);
+		this.name = name;
 	    this.phone = phone;
 	    this.address = address;
 	    this.email = email;
+//	    ProvidersByNameReport = new ArrayList<>();
+//		count = 0;
 	}
+	
+	
 	public String getId() {
 		return id;
 	}
@@ -138,18 +137,6 @@ public class Provider {
 	      return false;
 	    return true;
 	  }
-//	private static int nextID(Integer currID) {
-//		if (currID == null) {
-//			idCounter++;
-//			return idCounter;
-//		} else {
-//			int num = currID.intValue();
-//			if (num > idCounter)
-//				idCounter = num;
-//
-//			return currID;
-//		}
-//	}
 
 	private String nextID(String id) throws ConstraintViolationException {
 	    if (id == null) { // generate a new id
@@ -177,21 +164,6 @@ public class Provider {
 	    }
 	  }
 	
-//	@DOpt(type = DOpt.Type.AutoAttributeValueSynchroniser)
-//	public static void updateAutoGeneratedValue(DAttr attrib, Tuple derivingValue, Object minVal, Object maxVal)
-//			throws ConstraintViolationException {
-//
-//		if (minVal != null && maxVal != null) {
-//
-//			int maxIdVal = (Integer) maxVal;
-//			if (maxIdVal > idCounter) {
-//				idCounter = maxIdVal;
-//			}
-//		}
-//	}
-//
-//}
-	
 	@DOpt(type=DOpt.Type.AutoAttributeValueSynchroniser)
 	  public static void updateAutoGeneratedValue(
 	      DAttr attrib,
@@ -217,3 +189,4 @@ public class Provider {
 	    }
 	  }
 	}
+	

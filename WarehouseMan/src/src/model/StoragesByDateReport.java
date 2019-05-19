@@ -42,12 +42,12 @@ package src.model;
 	  private String date;
 	  
 	  /**output: providers whose names match {@link #name} */
-	  @DAttr(name="storages",type=Type.Collection,optional=false, mutable=false,
-	      serialisable=false,filter=@Select(clazz=Provider.class, 
+	  @DAttr(name="Storages",type=Type.Collection,optional=false, mutable=false,
+	      serialisable=false,filter=@Select(clazz=Storage.class, 
 	      attributes={Storage.S_id, Storage.S_date, Storage.S_rptStorageByDate})
 	      ,derivedFrom={"date"}
 	      )
-	  @DAssoc(ascName="Storages-by-date-report-has-s",role="report",
+	  @DAssoc(ascName="Storages-by-date-report-has-storage",role="report",
 	      ascType=AssocType.One2Many,endType=AssocEndType.One,
 	    associate=@Associate(type=Storage.class,cardMin=0,cardMax=MetaConstants.CARD_MORE
 	    ))

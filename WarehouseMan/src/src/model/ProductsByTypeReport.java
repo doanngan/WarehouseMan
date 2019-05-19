@@ -164,17 +164,17 @@ package src.model;
 	    return false;
 	  }
 	  
-	  /**
+	  /* 
 	   * @effects return TypeOfProducts
 	   */
-	  public Collection<Product> getProducts() {
-	    return Product;
+	  public Collection<TypeOfProduct> getTypeOfProducts() {
+	    return TypeOfProducts;
 	  }
 	  
 	  /**
 	   * @effects return numTypeOfProducts
 	   */
-	  public int getNumProducts() {
+	  public int getNumTypeOfProducts() {
 	    return numProducts;
 	  }
 

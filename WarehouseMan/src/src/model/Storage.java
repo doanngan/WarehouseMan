@@ -1,8 +1,7 @@
+
 package src.model;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 
 import domainapp.basics.exceptions.ConstraintViolationException;
 import domainapp.basics.model.meta.AttrRef;
@@ -14,9 +13,7 @@ import domainapp.basics.model.meta.DAttr;
 import domainapp.basics.model.meta.DAttr.Type;
 import domainapp.basics.model.meta.DClass;
 import domainapp.basics.model.meta.DOpt;
-import domainapp.basics.model.meta.Select;
 import domainapp.basics.util.Tuple;
-import src.model.StoragesByDateReport;
 
 @DClass(schema="WarehouseMan")
 public class Storage {
@@ -25,8 +22,7 @@ public class Storage {
 	  public static final String S_rptStorageByDate = "rptStorageByDate";
 	
 	  // attributes of Storage
-	  @DAttr(name = S_id, id = true, type = Type.String, auto = true, length = 6, 
-	      mutable = false, optional = false)
+	  @DAttr(name = S_id, id = true, type = Type.String, auto = true, length = 6, mutable = false, optional = false)
 	  private String id;
 	  //static variable to keep track of storage  id
 	  private static int idCounter = 0;
@@ -52,7 +48,7 @@ public class Storage {
 
 
 	@DOpt(type=DOpt.Type.ObjectFormConstructor)
-	  @DOpt(type=DOpt.Type.RequiredConstructor)
+	@DOpt(type=DOpt.Type.RequiredConstructor)
 	  public Storage(@AttrRef("date") String date) {
 	    this(null, date);
 	  }
@@ -68,10 +64,18 @@ public class Storage {
 	    this.date = date;
 	}
 	
+	public String getId() {
+		return id;
+	}
+	
 	// setter methods
-	  public void setDate(String date) {
-	    this.date = date;
+	  public String getDate() {
+	    return date;
 	  }
+	  
+	  public void setDate(String date) {
+			this.date = date;
+		}
 	
 	public Product getProduct() {
 		return product;
