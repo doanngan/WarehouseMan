@@ -19,25 +19,25 @@ import domainapp.basics.util.Tuple;
 @DClass(schema="WarehouseMan")
 public class Product {
 	
-	public static final String Pid = "id";
-	public static final String Pname = "name";
-	public static final String Pidate = "idate";
-	public static final String Piprice = "iprice";
-	public static final String PrptProductByType = "rptProductByType";
+	public static final String A_id = "id";
+	public static final String A_name = "name";
+	public static final String A_idate = "idate";
+	public static final String A_iprice = "iprice";
+	public static final String A_rptProductByType = "rptProductByType";
 	
-    @DAttr(name = Pid, id = true, type = Type.String, auto = true, length = 6,
+    @DAttr(name = A_id, id = true, type = Type.String, auto = true, length = 6,
             mutable = false, optional = false)
     private String id;
     
     private static int idCounter = 0;
     
-    @DAttr(name = Pname, type = Type.String, length = 20, optional = false)
+    @DAttr(name = A_name, type = Type.String, length = 20, optional = false)
     private String name;
     
-    @DAttr(name = Pidate, type = Type.String, length = 15, optional = false)
+    @DAttr(name = A_idate, type = Type.String, length = 15, optional = false)
     private String idate;
     
-    @DAttr(name = Piprice, type = Type.Double, length = 15, optional = false)
+    @DAttr(name = A_iprice, type = Type.Double, length = 15, optional = false)
     private Double iprice;
     
     @DAttr(name = "type", type = Type.Domain, length = 20, optional = false)
@@ -52,7 +52,7 @@ public class Product {
 	    associate = @Associate(type = Provider.class, cardMin = 1, cardMax = 1), dependsOn = true)
 	  private Provider provider;
     
-    @DAttr(name=PrptProductByType,type=Type.Domain, serialisable=false, 
+    @DAttr(name=A_rptProductByType,type=Type.Domain, serialisable=false, 
 		      virtual=true)
 		  private ProductsByTypeReport rptProductByType;
 
@@ -86,54 +86,69 @@ public class Product {
     	return id;
     }
     	
+    public String getName() {
+        return name;
+      }
+    
     public void setName(String name){
     	this.name = name;
     }
     
+    public String getIdate() {
+        return idate;
+      }
+
     public void setIdate(String idate){
     	this.idate = idate;
     }
     
+    public Double getIprice() {
+        return iprice; 
+      }
+
     public void setIprice(Double iprice){
     	this.iprice = iprice;
     }
     
-    public void settype(TypeOfProduct type){
-    	this.type = type;
-    }
-
-      public String getName() {
-        return name;
-      }
-
-      public String getIdate() {
-        return idate;
-      }
-
-      public Double getIprice() {
-        return iprice; 
-      }
-
       public TypeOfProduct getType() {
         return type;
       }
      
+      public void settype(TypeOfProduct type){
+      	this.type = type;
+      }
+      
       public Provider getProvider(){
     	  return provider;
       }
       
-//     private int nextID(Integer currId) {
-//         if (currId == null){
-//             id_counter++;
-//             return id_counter;
-//             }
-//         else {
-//             int num = currId.intValue();
-//             if (num > id_counter)
-//                 id_counter =num;
-//             return currId;
-//         }
-//     }
+      public void setProvider(Provider provider){
+        	this.provider = provider;
+        }
+    
+      public ProductsByTypeReport getRptProductByType() {
+  	    return rptProductByType;
+  	  } 
+      
+//      // override toString
+//      /**
+//       * @effects returns <code>this.id</code>
+//       */
+//      @Override
+//      public String toString() {
+//        return toString(true);
+//      }
+//
+//      /**
+//       * @effects returns <code>Product(id,name)</code>.
+//       */
+//      public String toString(boolean full) {
+//        if (full)
+//          return "Product(" + id + "," + name + "," + idate + "," + type + ","
+//              + iprice + ")";
+//        else
+//          return "Product(" + id + ")";
+//      }
       
       @Override
 	  public int hashCode() {
@@ -211,6 +226,4 @@ public class Product {
 	    }
 	  }
 	}
-
-
      

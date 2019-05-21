@@ -42,17 +42,17 @@ package src.model;
 	  private String typeOfProduct;
 	  
 	  /**output: TypeOfProducts whose names match {@link #typeOfProduct} */
-	  @DAttr(name="TypeOfProducts",type=Type.Collection,optional=false, mutable=false,
-	      serialisable=false,filter=@Select(clazz=TypeOfProduct.class, 
-	      attributes={TypeOfProduct.B_id, TypeOfProduct.B_name, TypeOfProduct.B_rptProductByType})
+	  @DAttr(name="Products",type=Type.Collection,optional=false, mutable=false,
+	      serialisable=false,filter=@Select(clazz=Product.class, 
+	      attributes={Product.A_id, Product.A_name, Product.A_rptProductByType})
 	      ,derivedFrom={"typeOfProduct"}
 	      )
-	  @DAssoc(ascName="Products-by-type-report-has-TypeOfProducts",role="report",
+	  @DAssoc(ascName="Products-by-type-report-has-Products",role="report",
 	      ascType=AssocType.One2Many,endType=AssocEndType.One,
-	    associate=@Associate(type=TypeOfProduct.class,cardMin=0,cardMax=MetaConstants.CARD_MORE
+	    associate=@Associate(type=Product.class,cardMin=0,cardMax=MetaConstants.CARD_MORE
 	    ))
 	  @Output
-	  private Collection<TypeOfProduct> TypeOfProducts;
+	  private Collection<Product> Products;
 
 	  /**output: number of Products found (if any), derived from {@link #TypeOfProducts} */
 	  @DAttr(name = "numProducts", type = Type.Integer, length = 20, auto=true, mutable=false)
@@ -72,7 +72,7 @@ package src.model;
 	   */
 	  @DOpt(type=DOpt.Type.ObjectFormConstructor)
 	  @DOpt(type=DOpt.Type.RequiredConstructor)
-	  public ProductsByTypeReport(@AttrRef("typeOfProduct") String name, String typeOfProduct) throws NotPossibleException, DataSourceException {
+	  public ProductsByTypeReport(@AttrRef("typeOfProduct") String typeOfProduct) throws NotPossibleException, DataSourceException {
 	    this.id=++idCounter;
 	    this.typeOfProduct = typeOfProduct;
 	    
@@ -115,7 +115,7 @@ package src.model;
 	   *  DataSourceException if fails to read from the data source. </pre>
 	   */
 	  @DOpt(type=DOpt.Type.DerivedAttributeUpdater) //
-	  @AttrRef(value="TypeOfProducts")
+	  @AttrRef(value="Products")
 	  public void doReportQuery() throws NotPossibleException, DataSourceException {
 	    // the query manager instance
 	    
@@ -126,19 +126,19 @@ package src.model;
 	    DSMBasic dsm = qrm.getDsm();
 	    
 	    //TODO: to conserve memory cache the query and only change the query parameter value(s)
-	    Query q = QueryToolKit.createSearchQuery(dsm, TypeOfProduct.class, 
-	        new String[] {TypeOfProduct.B_name}, 
+	    Query q = QueryToolKit.createSearchQuery(dsm, Product.class, 
+	        new String[] {Product.A_name}, 
 	        new Op[] {Op.MATCH}, 
 	        new Object[] {"%"+typeOfProduct+"%"});
 	    
-	    Map<Oid, TypeOfProduct> result = qrm.getDom().retrieveObjects(TypeOfProduct.class, q);
+	    Map<Oid, Product> result = qrm.getDom().retrieveObjects(Product.class, q);
 	    
 	    if (result != null) {
 	      // update the main output data 
-	      TypeOfProducts = result.values();
+	      Products = result.values();
 	      
 	      // update other output (if any)
-	      numProducts = TypeOfProducts.size();
+	      numProducts = Products.size();
 	    } else {
 	      // no data found: reset output
 	      resetOutput();
@@ -150,7 +150,7 @@ package src.model;
 	   *  reset all output attributes to their initial values
 	   */
 	  private void resetOutput() {
-	    TypeOfProducts = null;
+	    Products = null;
 	    numProducts = 0;
 	  }
 
@@ -159,7 +159,7 @@ package src.model;
 	   * However, this method is empty because TypeOfProducts have already be recorded in the attribute {@link #TypeOfProducts}.
 	   */
 	  @DOpt(type=DOpt.Type.LinkAdder)
-	  public boolean addTypeOfProduct(Collection<TypeOfProduct> TypeOfProducts) {
+	  public boolean addProduct(Collection<Product> Products) {
 	    // do nothing
 	    return false;
 	  }
@@ -167,14 +167,14 @@ package src.model;
 	  /* 
 	   * @effects return TypeOfProducts
 	   */
-	  public Collection<TypeOfProduct> getTypeOfProducts() {
-	    return TypeOfProducts;
+	  public Collection<Product> getProducts() {
+	    return Products;
 	  }
 	  
 	  /**
 	   * @effects return numTypeOfProducts
 	   */
-	  public int getNumTypeOfProducts() {
+	  public int getNumProducts() {
 	    return numProducts;
 	  }
 

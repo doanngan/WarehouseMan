@@ -20,6 +20,7 @@ public class Provider {
 	  public static final String P_name = "name";
 	  public static final String P_phone = "phone";
 	  public static final String P_email = "email";
+	  public static final String P_address = "address";
 	  public static final String P_rptProviderByName = "rptProviderByName";
 
 	@DAttr(name = P_id, id = true, auto = true, type = Type.String, mutable = false, optional = false, length = 6)
@@ -27,8 +28,8 @@ public class Provider {
 	private static int idCounter = 0;
 
 	@DAttr(name = P_name, type = Type.String, optional = false, length = 20)
-	@DAssoc(ascName = "Providers-by-name-report-has-Provider", role = "provider",
-	ascType = AssocType.One2Many, endType = AssocEndType.Many, associate = @Associate(type = Provider.class, cardMin = 1, cardMax = 1), dependsOn = true)
+//	@DAssoc(ascName = "Providers-by-name-report-has-Provider", role = "provider",
+//	ascType = AssocType.One2Many, endType = AssocEndType.Many, associate = @Associate(type = Provider.class, cardMin = 1, cardMax = 1), dependsOn = true)
 	private String name;
 	
 	@DAttr(name = P_phone, type = Type.String, optional = false, length = 15)
@@ -37,17 +38,16 @@ public class Provider {
 	@DAttr(name = P_email, type = Type.String, optional = false, length = 20)
 	private String email;
 	
-	@DAttr(name = "address", type = Type.Domain, length = 20, optional = true)
+	@DAttr(name = P_address, type = Type.Domain, length = 20, optional = true)
 	@DAssoc(ascName = "provider-has-address", role = "provider", ascType = AssocType.One2Many, 
 	        endType = AssocEndType.Many, associate = @Associate(type = Address.class, cardMin = 1, cardMax = 10))
 	private Address address;
 	
-	@DAttr(name=P_rptProviderByName,type=DAttr.Type.Domain, serialisable=false,
+	@DAttr(name=P_rptProviderByName,type=Type.Domain, serialisable=false,
 		   virtual=true)
 	private ProvidersByNameReport rptProviderByName;
 	
 //	private Collection<ProvidersByNameReport> ProvidersByNameReport;
-//	private int count;
 	
 	@DOpt(type=DOpt.Type.ObjectFormConstructor)
 	@DOpt(type=DOpt.Type.RequiredConstructor)

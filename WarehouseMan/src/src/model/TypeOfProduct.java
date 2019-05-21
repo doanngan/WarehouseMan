@@ -13,23 +13,18 @@ import domainapp.basics.model.meta.DClass;
 import domainapp.basics.model.meta.DOpt;
 import domainapp.basics.model.meta.Select;
 import domainapp.basics.util.Tuple;
-import src.model.ProductsByTypeReport;
 
 @DClass(schema="WarehouseMan")
 public class TypeOfProduct {
-	public static final String B_id = "id";
-	public static final String B_name = "typeOfProduct";
-	public static final String B_rptProductByType = "rptProductByType";
+	public static final String T_id = "id";
+	public static final String T_name = "typeOfProduct";
 
-	@DAttr(name = B_id, id = true, auto = true, type = Type.String, length = 6, mutable = false, optional = false)
+	@DAttr(name = T_id, id = true, auto = true, type = Type.String, length = 6, mutable = false, optional = false)
 	private String id;
 	private static int idCounter = 0;
 
-	@DAttr(name = B_name, type = Type.String, length = 30, optional = false)
+	@DAttr(name = T_name, type = Type.String, length = 30, optional = false)
 	private String typeOfProduct;
-	
-	@DAttr(name=B_rptProductByType,type=DAttr.Type.Domain, serialisable=false, virtual=true)
-		private ProductsByTypeReport rptProductByType;
 	
 	@DOpt(type=DOpt.Type.ObjectFormConstructor)
 	@DOpt(type=DOpt.Type.RequiredConstructor)
@@ -59,10 +54,6 @@ public class TypeOfProduct {
 	public void setTypeOfProduct(String typeOfProduct) {
 		this.typeOfProduct = typeOfProduct;
 	}
-
-	public ProductsByTypeReport getRptProductByType() {
-	    return rptProductByType;
-	  }
 	
 	@Override
 	  public int hashCode() {
@@ -88,34 +79,6 @@ public class TypeOfProduct {
 	      return false;
 	    return true;
 	  }
-	
-//	@Override
-//	public String toString() {
-//		return "typeOfProduct (" + id + "," + typeOfProduct + " )";
-//	}
-
-	// automatically generate the next student id
-//	 private String nextID(String id) throws ConstraintViolationException {
-//		    if (id == null) { // generate a new id
-//		        idCounter++;
-//		      return "T" + idCounter;
-//		    } else {
-//		      // update id
-//		      int num;
-//		      try {
-//		        num = Integer.parseInt(id.substring(1));
-//		      } catch (RuntimeException e) {
-//		        throw new ConstraintViolationException(
-//		            ConstraintViolationException.Code.INVALID_VALUE, e, new Object[] { id });
-//		      }
-//		      
-//		      if (num > idCounter) {
-//		        idCounter = num;
-//		      }
-//		      
-//		      return id;
-//		    }
-//		  }
 
 	private String nextID(String id) throws ConstraintViolationException {
 	    if (id == null) { // generate a new id

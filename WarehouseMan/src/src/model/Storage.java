@@ -17,6 +17,7 @@ import domainapp.basics.util.Tuple;
 
 @DClass(schema="WarehouseMan")
 public class Storage {
+	
 	  public static final String S_date = "date";
 	  public static final String S_id = "id";
 	  public static final String S_rptStorageByDate = "rptStorageByDate";
@@ -45,7 +46,6 @@ public class Storage {
 	@DAttr(name=S_rptStorageByDate,type=Type.Domain, serialisable=false, 
 		      virtual=true)
 		  private StoragesByDateReport rptStorageByDate;
-
 
 	@DOpt(type=DOpt.Type.ObjectFormConstructor)
 	@DOpt(type=DOpt.Type.RequiredConstructor)
