@@ -176,7 +176,7 @@ public class Product {
 	  }
 	  
 	  private String nextID(String id) throws ConstraintViolationException {
-		    if (id == null) { // generate a new id
+		    if (id == null) { // generate a new id  
 		      if (idCounter == 0) {
 		        idCounter = Calendar.getInstance().get(Calendar.YEAR);
 		      } else {
